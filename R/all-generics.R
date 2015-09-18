@@ -1,485 +1,1048 @@
 # Generic functions
 # -----------------
-#' @include all-classes.R
-#' @include init-methods.R
-#' @include ArgList.R
-#' @include flatten-list.R
-NULL
 
-#' GaVar
-#' 
-#' Gets or Creates an object from the superclass .gaVar
-#' 
+#' Google Analytics dimension and metric variables.
+#'
+#' \code{Var} returns a '.var' object which is valid Google Analytics dimension
+#' or metric for use with the core reporting, multi-channel-funnel reporting or
+#' real-time reporting API.
+#'
+#' Use \code{Var} to lookup a dimension or metric from the Google Analytics core
+#' reporting, multi-channel-funnel reporting, or real-time reporting APIs, for
+#' use in defining expressions (of superclass '.expr') or (to be implemented)
+#' variable lists (of superclass '.varList') such as query dimensions, metrics
+#' or sortBy parameters.
+#'
+#' \code{Var} accepts either a character, '.var', or '.expr' object. A character
+#' object will be coerced to a '.var' object by looking for a matching dimension
+#' or metric from the Core Reporting, Multi-Channel Funnel Reporting, and
+#' Real-Time Reporting APIs. Providing an '.expr' object will return the
+#' dimension or metric used within that Google Analytics expression.
+#'
+#' @param object an object that inherits from or extends the class '.var',
+#'   including 'gaDimVar', 'gaMetVar', 'mcfDimVar', 'mcfMetVar', 'rtDimVar',
+#'   'rtMetVar', 'gaExpr', 'mcfExpr', 'rtExpr', 'gaDimensions', 'gaMetrics',
+#'   'mcfDimensions', 'mcfMetrics', 'rtDimensions' and 'rtMetrics'.
+#' @param ... A replacement value for \code{object} coerced to class '.var'.
+#'
+#' @return An object inheriting from the superclass '.var'
+#'
+#' @examples
+#' Var("source")
+#' dim <- Var("ga:medium")
+#' Var(dim)
+#' paid_traffic <- Expr(dim, "==", "cpc")
+#' Var(paid_traffic)
+#'
+#' @seealso \itemize{ \item
+#'   \href{https://developers.google.com/analytics/devguides/reporting/core/dimsmets}{Core
+#'    Reporting API dimensions and metrics} \item
+#'   \href{https://developers.google.com/analytics/devguides/reporting/realtime/dimsmets/}{Multi-Channel-Funnel
+#'    Reporting API dimensions and metrics} \item
+#'   \href{https://developers.google.com/analytics/devguides/reporting/mcf/dimsmets/}{Real-Time
+#'    Reporting API dimensions and metrics} }
+#'
 #' @export
-#' @rdname GaVar
+#' @rdname Var
 setGeneric(
-  name = "GaVar",
-  def = function(.Object) {},
-  valueClass = "character",
+  "Var",
+  function(object, ...) {},
+  valueClass = ".var",
   useAsDefault = FALSE
 )
 
-#' GaVar<-
-#' 
-#' Sets the value of an object or sets its slot belonging to the superclass .gaVar
-#' 
+#' Var<-.
+#'
+#' \code{Var<-} sets the value of an object belonging to the superclass '.var'
+#' or sets the var slot of an expression object belonging to superclass '.expr'
+#'
+#' @param value any object that can be coerced to a valid \code{object} class.
+#'
+#' @examples
+#' expr1 <- Expr("pageviews", '>', 10)
+#' Var(expr1) <- "uniquePageviews"
+#'
 #' @export
-#' @rdname GaVar
+#' @rdname Var
 setGeneric(
-  name = "GaVar<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaVar<-")
-    validObject(.Object)
-    return(.Object)
+  "Var<-",
+  function(object, value) {
+    object <- standardGeneric("Var<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaOperator
-#' 
-#' Get or create an operator used in an expression.
-#' 
+#' \code{GaVar} Gets or creates an object from the superclass .gaVar
+#'
 #' @export
-#' @rdname GaOperator
+#' @rdname Var
 setGeneric(
-  name = "GaOperator",
-  def = function(.Object) {},
-  valueClass = ".gaOperator",
+  "GaVar",
+  function(object, ...) {},
+  valueClass = ".gaVar",
   useAsDefault = FALSE
 )
 
-#' GaOperator<-
-#' 
-#' Set the operator used in an expression.
-#' 
+#' \code{GaVar<-} replaces a '.var' object or sets the var slot of '.expr'
+#' object to a Google Analytics Core Reporting API dimension or metric
+#' that inherits from the class '.gaVar'.
+#'
 #' @export
-#' @rdname GaOperator
+#' @rdname Var
 setGeneric(
-  name = "GaOperator<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaOperator<-")
-    validObject(.Object)
-    return(.Object)
+  "GaVar<-",
+  function(object, value) {
+    object <- standardGeneric("GaVar<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaDimOperator
-#' 
-#' Get or create an operator used specifically in a dimension type expression.
-#' 
+#' \code{McfVar} Gets or creates an object from the superclass .mcfVar
+#'
 #' @export
-#' @rdname GaDimOperator
+#' @rdname Var
 setGeneric(
-  name = "GaDimOperator",
-  def = function(.Object) {},
-  valueClass = "gaDimOperator",
+  "McfVar",
+  function(object, ...) {},
+  valueClass = ".mcfVar",
   useAsDefault = FALSE
 )
 
-#' GaMetOperator
-#' 
-#' Get or create an operator used specifically in a metric type expression.
-#' 
+#' \code{McfVar<-} replaces a '.var' object or sets the var slot of '.expr'
+#' object to a Multi Channel Funnel Reporting API dimension or metric
+#' that inherits from the class '.mcfVar'.
+#'
 #' @export
-#' @rdname GaMetOperator
+#' @rdname Var
 setGeneric(
-  name = "GaMetOperator",
-  def = function(.Object) {},
-  valueClass = "gaMetOperator",
+  "McfVar<-",
+  function(object, value) {
+    object <- standardGeneric("McfVar<-")
+    validObject(object)
+    object
+  }
+)
+
+#' \code{RtVar} Gets or creates an object from the superclass .rtVar
+#'
+#' @export
+#' @rdname Var
+setGeneric(
+  "RtVar",
+  function(object, ...) {},
+  valueClass = ".rtVar",
   useAsDefault = FALSE
 )
 
-#' GaOperand
-#' 
+#' \code{RtVar<-} replaces a '.var' object or sets the var slot of '.expr'
+#' object to a Google Analytics Real Time Reporting API dimension or metric
+#' that inherits from the class '.rtVar'.
+#'
+#' @export
+#' @rdname Var
+setGeneric(
+  "RtVar<-",
+  function(object, value) {
+    object <- standardGeneric("RtVar<-")
+    validObject(object)
+    object
+  }
+)
+
+#' Comparator.
+#'
+#' Get or create an comparator used in an expression.
+#'
+#' @param object The object to be coerced to a '.Comparator' class or to get the
+#'   comparator from.
+#' @param ... Used by certain methods.
+#'
+#' @export
+#' @rdname Comparator
+setGeneric(
+  "Comparator",
+  function(object, ...) {},
+  valueClass = ".comparator",
+  useAsDefault = FALSE
+)
+
+#' Comparator<-.
+#'
+#' Set the comparator used in an expression.
+#'
+#' @param value The value to set the comparator to.
+#'
+#' @export
+#' @rdname Comparator
+setGeneric(
+  "Comparator<-",
+  function(object, value) {
+    object <- standardGeneric("Comparator<-")
+    validObject(object)
+    object
+  }
+)
+
+#' Operand.
+#'
 #' Get the operand of an expression.
-#' 
+#'
+#' @param object The object for which to set the operand of.
+#' @param value The value to set the operand to.
+#'
 #' @export
-#' @rdname GaOperand
+#' @rdname Operand
 setGeneric(
-  name = "GaOperand",
-  def = function(.Object) {},
-  valueClass = ".gaOperand",
+  "Operand",
+  function(object, value) {},
+  valueClass = ".operand",
   useAsDefault = FALSE
 )
 
-#' GaOperand<-
-#' 
+#' Operand<-.
+#'
 #' Set the operand of an expression.
-#' 
+#'
 #' @export
-#' @rdname GaOperand
+#' @rdname Operand
 setGeneric(
-  name = "GaOperand<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaOperand<-")
-    validObject(.Object)
-    return(.Object)
+  "Operand<-",
+  function(object, value) {
+    object <- standardGeneric("Operand<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaIsRegEx
-#' 
+#' IsRegEx.
+#'
 #' Checks for a regular expression.
-#' 
+#'
+#' @param object An object to check if whether a regular expression.
+#'
+#' @return TRUE or FALSE
+#'
 #' @export
-#' @rdname GaIsRegEx
 setGeneric(
-  name = "GaIsRegEx",
-  def = function(.Object) {},
-  valueClass = "logical"
-)
-
-#' GaNot
-#' 
-#' NOT an expression.
-#' 
-#' @export
-#' @rdname GaNot
-setGeneric(
-  name = "GaNot",
-  def = function(.Object) {},
-  valueClass = c(".gaOperator",".gaCompoundExpr"),
+  "IsRegEx",
+  function(object) {},
+  valueClass = "logical",
   useAsDefault = FALSE
 )
 
-#' GaExpr
-#' 
-#' Create an expression.
-#' 
+#' Expr.
+#'
+#' Define a Google Analytics expression.
+#'
+#' @param object A dimension or metric variable, or another object to be coerced
+#'   to an .expr object.
+#' @param comparator The comparator to use for the expression.
+#' @param operand The operand to use for the expression.
+#' @param metricScope The scope to use for segmentation if using a metric.
+#'   Possible values include "perUser" or "perSession".
+#'
+#' @export
+setGeneric(
+  "Expr",
+  function(object, comparator, operand, metricScope = "") {},
+  valueClass = ".expr",
+  useAsDefault = FALSE
+)
+
+#' GaExpr.
+#'
+#' Create a Core Reporting API expression.
+#'
 #' @examples
 #' \donttest{
-#'   myQuery <- GaQuery(profileId = 123456789)
+#'   myQuery <- GaQuery(view = 123456789)
 #'   source_matches_google <- GaExpr("source", "~", "google")
 #'   GaFilter(myQuery) <- source_matches_google
 #'   GetGaData(myQuery)
 #' }
-#' 
+#' @inheritParams Expr
 #' @export
-#' @rdname GaExpr
 setGeneric(
-  name = "GaExpr",
-  def = function(.Object, gaOperator, gaOperand) {},
+  "GaExpr",
+  function(object, comparator, operand, metricScope = "") {},
   valueClass = ".gaExpr",
   useAsDefault = FALSE
 )
 
-#' GaOr
-#' 
-#' OR two or more expressions.
-#' 
+#' McfExpr.
+#'
+#' Create a Multi-Chanel Funnel Reporting API expression.
+#'
+#' @examples
+#' \donttest{
+#'   myQuery <- McfQuery(view = 123456789)
+#'   source_matches_google <- McfExpr("mcf:source", "~", "google")
+#'   TableFilter(myQuery) <- source_matches_google
+#'   GetData(myQuery)
+#' }
+#' @inheritParams Expr
 #' @export
-#' @rdname GaOr
 setGeneric(
-  name = "GaOr",
-  def = function(.Object, ...) {},
-  valueClass = "gaOr",
+  "McfExpr",
+  function(object, comparator, operand) {},
+  valueClass = ".mcfExpr",
   useAsDefault = FALSE
 )
 
-#' GaAnd
-#' 
+#' RtExpr.
+#'
+#' Create a Real-Time Reporting API expression.
+#'
+#' @examples
+#' \donttest{
+#'   myQuery <- RtQuery(view = 123456789)
+#'   source_matches_google <- RtExpr("rt:source", "~", "google")
+#'   TableFilter(myQuery) <- source_matches_google
+#'   GetData(myQuery)
+#' }
+#' @inheritParams Expr
+#' @export
+setGeneric(
+  "RtExpr",
+  function(object, comparator, operand) {},
+  valueClass = ".rtExpr",
+  useAsDefault = FALSE
+)
+
+#' Not.
+#'
+#' Invert an expression, i.e. NOT.
+#'
+#' @param object An object to get the logical inverse of.
+#'
+#' @export
+#' @rdname Not
+setGeneric(
+  "Not",
+  function(object) {},
+  valueClass = c(".comparator", ".compoundExpr", ".gaSegmentFilter"),
+  useAsDefault = FALSE
+)
+
+#' Or.
+#'
+#' OR two or more expressions.
+#'
+#' @param object The first object to include within the OR expression.
+#' @param ... Additional objects to include within the OR expression.
+#'
+#' @return An object of class orExpr.
+#'
+#' @export
+#' @rdname Or
+setGeneric(
+  "Or",
+  function(object, ...) {},
+  valueClass = "orExpr",
+  useAsDefault = FALSE
+)
+
+#' And.
+#'
 #' AND two or more ganalytics expressions together.
-#' 
+#'
 #' Create a new AND expression from one or more arguments
 #' Valid types are either AND, OR, or single expressions.
 #' A single list of objects is also accepted.
-#' 
+#'
+#' @param object The first object within the AND expression
+#' @param ... Additional objects to include within the AND expression.
+#'
+#' @return an object of class \code{andExpr}
+#'
 #' @export
-#' @rdname GaAnd
+#' @rdname And
 setGeneric(
-  name = "GaAnd",
-  def = function(.Object, ...) {},
-  valueClass = "gaAnd",
+  "And",
+  function(object, ...) {},
+  valueClass = "andExpr",
   useAsDefault = FALSE
 )
 
-#' GaSegment
-#' 
-#' Get the segment.
-#' 
+#' Generate an expression that gives the Exclusive-OR of two expressions.
+#'
+#' @param x,y Conditions for an exclusive-or expression.
+#'
+#'
 #' @export
-#' @rdname GaSegment
+#' @rdname xor
+setGeneric("xor")
+
+#' Later.
+#'
+#' Treat a step within a sequence as happening at any point after any preceding
+#' steps in the sequence, i.e. 'later'. 'Later' means 'followed by', but not
+#' necessarily immediately.
+#'
+#' @param object The expression that should preceed others in the sequence.
+#' @param ... Any other expressions that should follow the first one but before
+#'   any others in the sequence.
+#'
+#' @return a gaSegmentSequenceStep object, with the immediate flag not set.
+#'
+#' @seealso Sequence
+#'
+#' @export
 setGeneric(
-  name = "GaSegment",
-  def = function(.Object) {},
+  "Later",
+  function(object, ...) {},
+  valueClass = "gaSegmentSequenceStep",
+  useAsDefault = FALSE
+)
+
+#' Then.
+#'
+#' Treat a step within a sequence as happening immediately after any preceding
+#' steps in the sequence, i.e. 'immediately following'.
+#'
+#' @param object The expression that should \bold{immediately} preceed others in
+#'   the sequence.
+#' @param ... Any other expressions that should \bold{immediately} follow the
+#'   first one but before any others in the sequence.
+#'
+#' @return a gaSegmentSequenceStep object, with the immediate flag set.
+#'
+#' @export
+#' @seealso Sequence
+setGeneric(
+  "Then",
+  function(object, ...) {},
+  valueClass = "gaSegmentSequenceStep",
+  useAsDefault = FALSE
+)
+
+#' First.
+#'
+#' If used at the beginning of a sequence, indicates that this step must match
+#' the first interaction of included sessions and users within the select date
+#' range. First expressly means 'first interaction' within the date range.
+#'
+#' @param object An expression that should be at the start of a sequence
+#'   expression.
+#' @param ... Any other expressions that should immediately follow the first
+#'   expression.
+#'
+#' @return a gaSegmentSequenceStep object, with the immediate flag set.
+#'
+#'
+#' @export
+#' @seealso Sequence
+setGeneric(
+  "First",
+  function(object, ...) {},
+  valueClass = "gaSegmentSequenceStep",
+  useAsDefault = FALSE
+)
+
+#' Sequence.
+#'
+#' Create a new gaSequence object
+#'
+#' @param object A sequence step or another expression that should be coerced to
+#'   a sequence condition.
+#' @param ... Other steps within the sequence condition, in the order in which
+#'   they should be applied.
+#' @param negation Logical TRUE or FALSE to match segments where this sequence
+#'   has not occured.
+#'
+#' @export
+setGeneric(
+  "Sequence",
+  function(object, ..., negation = FALSE) {
+    if (!missing(negation)) {
+      warning("Argument 'negation' is deprecated. Instead, please wrap the sequence or condtion within an Include or Exclude call.")
+    }
+    standardGeneric("Sequence")
+  },
+  valueClass = "gaSegmentSequenceFilter",
+  useAsDefault = FALSE
+)
+
+#' SegmentConditionFilter.
+#'
+#' Create a new gaSegmentConditionFilter object
+#'
+#' @param object An expression to be used as a non-sequential segment condition.
+#' @param ... Other expressions to be ANDed to the first expression provided.
+#' @param negation Logical TRUE or FALSE to match segments where this conditon
+#'   has not been met.
+#' @return a gaSegmentConditionFilter object.
+#'
+#' @export
+setGeneric(
+  "SegmentConditionFilter",
+  function(object, ..., negation = FALSE) {},
+  valueClass = "gaSegmentConditionFilter",
+  useAsDefault = FALSE
+)
+
+#' Include.
+#'
+#' One or more segment conditions or sequences to include from the defined user
+#' or session segment.
+#'
+#' @param object a condition or sequence to include
+#' @param ... further conditions or sequences to include, i.e. ANDed.
+#' @return a .gaSegmentFilter object with its negate slot set to FALSE.
+#'
+#' @export
+setGeneric(
+  "Include",
+  function(object, ...) {},
+  valueClass = c(".gaSegmentFilter", "gaSegmentFilterList"),
+  useAsDefault = FALSE
+)
+
+#' Exclude.
+#'
+#' One or more segment conditions or sequences to exclude from the defined user
+#' or session segment.
+#'
+#' @param object a condition or sequence to exclude
+#' @param ... further conditions or sequences to exclude.
+#' @return a .gaSegmentFilter object with its negate slot set to TRUE.
+#'
+#' @export
+setGeneric(
+  "Exclude",
+  function(object, ...) {},
+  valueClass = "gaSegmentFilterList",
+  useAsDefault = TRUE
+)
+
+#' SegmentFilters.
+#'
+#' Create a new gaSegmentFilterList object
+#'
+#' A segment condition is either sequential or non-sequential. Sequential and
+#' non-sequential conditoins can be combined using this function.
+#'
+#' @param object The first condition to be included in the segments definition.
+#' @param ... Other conditions to be included in the segment definition.
+#' @param scope The scope of this condition, either 'user' or 'session' level.
+#' @return a gaSegmentFilterList object.
+#'
+#' @export
+setGeneric(
+  "SegmentFilters",
+  function(object, ..., scope = "sessions") {},
+  valueClass = "gaSegmentFilterList",
+  useAsDefault = FALSE
+)
+
+#' IsNegated
+#'
+#' Tests whether a segment filter is negated.
+#'
+#' @param object an object to test for negation belonging to the superclass
+#'   \code{.gaSegmentFilter}.
+#'
+#' @export
+setGeneric(
+  "IsNegated",
+  function(object) {},
+  valueClass = "logical",
+  useAsDefault = FALSE
+)
+
+#' PerHit
+#'
+#' Set the scope of a gaMetExpr object to hit-level, or transforms a condition
+#' filter to a sequence filter of length one (i.e. conditions to match a single
+#' hit).
+#'
+#' @param object a gaMetExpr object to coerce to user-level.
+#' @param ... Other conditions to be included in the segment definition.
+#'
+#' @export
+setGeneric(
+  "PerHit",
+  function(object, ...){},
+  valueClass = c("gaSegMetExpr", "gaSegmentSequenceFilter"),
+  useAsDefault = FALSE
+)
+
+#' PerSession
+#'
+#' Set the scope of a gaSegmentFilterList or gaMetExpr object to session-level.
+#'
+#' @param object a gaSegmentFilterList or gaMetExpr object to coerce to session-level.
+#' @param ... Other conditions to be included in the segment definition.
+#'
+#' @export
+setGeneric(
+  "PerSession",
+  function(object, ...){},
+  valueClass = c("gaSegmentFilterList", "gaSegMetExpr"),
+  useAsDefault = FALSE
+)
+
+#' PerUser
+#'
+#' Set the scope of a gaSegmentFilterList or gaMetExpr object to user-level.
+#'
+#' @param object a gaSegmentFilterList or gaMetExpr object to coerce to user-level.
+#' @param ... Other conditions to be included in the segment definition.
+#'
+#' @export
+setGeneric(
+  "PerUser",
+  function(object, ...){},
+  valueClass = c("gaSegmentFilterList", "gaSegMetExpr"),
+  useAsDefault = FALSE
+)
+
+#' ScopeLevel.
+#'
+#' Get the scope level of a gaDynSegment or gaMetExpr
+#'
+#' @param object Segment condition or combined segment conditions or metric
+#'   expression.
+#' @param value If a new scope level is supplied, then this function will return
+#'   an updated copy of the supplied object with the new scope applied.
+#'
+#' @export
+#' @rdname ScopeLevel
+setGeneric(
+  "ScopeLevel",
+  function(object, value) {},
+  valueClass = "character",
+  useAsDefault = FALSE
+)
+
+#' ScopeLevel<-.
+#'
+#' Set the scope level of a gaDynSegment or a gaMetExpr
+#' For segments, one of 'users' or 'sessions'
+#' For metric expressions one of 'perUser', 'perSession' or 'perHit'
+#'
+#' @export
+#' @rdname ScopeLevel
+setGeneric(
+  "ScopeLevel<-",
+  function(object, value) {
+    object <- standardGeneric("ScopeLevel<-")
+    validObject(object)
+    object
+  }
+)
+
+#' Segment.
+#'
+#' Get the segment.
+#'
+#' @param object An expression to coerce to a segment definition or segment ID
+#' @param ... Other expressions to combine with the first expression, if
+#'   appropriate.
+#' @param scope The scope level to apply to the resulting segment definition.
+#'
+#' @export
+#' @rdname Segment
+setGeneric(
+  "Segment",
+  function(object, ..., scope = "sessions") {},
   valueClass = ".gaSegment",
   useAsDefault = FALSE
 )
 
-#' GaSegment<-
-#' 
+#' Segment<-.
+#'
 #' Set the segment
-#' 
+#'
+#' @param value The segment definition or ID to set the segment parameter to.
+#'
 #' @export
-#' @rdname GaSegment
+#' @rdname Segment
 setGeneric(
-  name = "GaSegment<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaSegment<-")
-    validObject(.Object)
-    return(.Object)
+  "Segment<-",
+  function(object, value) {
+    object <- standardGeneric("Segment<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaFilter
-#' 
+#' TableFilter.
+#'
 #' Get the filter.
-#' 
+#'
+#' @param object The object to be coerced to a TableFilter or the query object
+#'   to apply a table filter to.
+#' @param value The replacement table filter where \code{object} is a query.
+#'
 #' @export
-#' @rdname GaFilter
+#' @rdname TableFilter
 setGeneric(
-  name = "GaFilter",
-  def = function(.Object, ...) {},
-  valueClass = "gaFilter",
+  "TableFilter",
+  function(object, value) {},
+  valueClass = c(".tableFilter", ".query"),
   useAsDefault = FALSE
 )
 
-#' GaFilter<-
-#' 
+#' TableFilter<-.
+#'
 #' Set the filter.
-#' 
+#'
 #' @export
-#' @rdname GaFilter
+#' @rdname TableFilter
 setGeneric(
-  name = "GaFilter<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaFilter<-")
-    validObject(.Object)
-    return(.Object)
+  "TableFilter<-",
+  function(object, value) {
+    object <- standardGeneric("TableFilter<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaDateRange
-#' 
+#' DateRange.
+#'
 #' Get the date range.
-#' 
+#'
+#' @param object The start date of the date range or a object to coerce to a
+#'   date range. Alternatively, a query object to replace the date range of.
+#' @param endDate The end date of the date range. Alternatively, if
+#'   \code{object} is a '.query' object, then endDate is the replacement date
+#'   range.
 #' @export
-#' @rdname GaDateRange
+#' @rdname DateRange
 setGeneric(
-  name = "GaDateRange",
-  def =  function(.Object, endDate) {},
-  valueClass = "gaDateRange",
+  "DateRange",
+  function(object, endDate) {},
+  valueClass = "dateRange",
   useAsDefault = FALSE
 )
 
-#' GaDateRange<-
-#' 
+#' DateRange<-.
+#'
 #' Set the date range.
-#' 
+#'
+#' @param value The replacement date range.
+#'
 #' @export
-#' @rdname GaDateRange
+#' @rdname DateRange
 setGeneric(
-  name = "GaDateRange<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaDateRange<-")
-    validObject(.Object)
-    return(.Object)
+  "DateRange<-",
+  function(object, value) {
+    object <- standardGeneric("DateRange<-")
+    validObject(object)
+    return(object)
   }
 )
 
-#' GaStartDate
-#' 
+#' StartDate.
+#'
 #' Get the start date.
-#' 
+#'
 #' @export
-#' @rdname GaStartDate
+#' @rdname DateRange
 setGeneric(
-  name = "GaStartDate",
-  def = function(.Object) {},
+  "StartDate",
+  function(object, value) {},
   valueClass = "Date",
   useAsDefault = FALSE
 )
 
-#' GaStartDate<-
-#' 
+#' StartDate<-.
+#'
 #' Set the start date.
-#' 
+#'
 #' @export
-#' @rdname GaStartDate
+#' @rdname DateRange
 setGeneric(
-  name = "GaStartDate<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaStartDate<-")
-    validObject(.Object)
-    return(.Object)
+  "StartDate<-",
+  function(object, value) {
+    object <- standardGeneric("StartDate<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaEndDate
-#' 
+#' EndDate.
+#'
 #' Get the end date of the date range.
-#' 
+#'
 #' @export
-#' @rdname GaEndDate
+#' @rdname DateRange
 setGeneric(
-  name = "GaEndDate",
-  def = function(.Object) {},
+  "EndDate",
+  function(object, value) {},
   valueClass = "Date",
   useAsDefault = FALSE
 )
 
-#' GaEndDate<-
-#' 
+#' EndDate<-.
+#'
 #' Set the endDate of the date range.
-#' 
+#'
 #' @export
-#' @rdname GaEndDate
+#' @rdname DateRange
 setGeneric(
-  name = "GaEndDate<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaEndDate<-")
-    validObject(.Object)
-    return(.Object)
+  "EndDate<-",
+  function(object, value) {
+    object <- standardGeneric("EndDate<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaMetrics
-#' 
+#' Metrics.
+#'
 #' Get the metrics of the object.
-#' 
+#'
+#' @param object An object to coerce to a list of metrics, or a query object to
+#'   replace the metrics of.
+#' @param ... Further metrics to add to the resulting list or the replacement
+#'   value for the metrics of the query object (if supplied).
+#'
 #' @export
-#' @rdname GaMetrics
+#' @rdname Metrics
 setGeneric(
-  name = "GaMetrics",
-  def = function(.Object, ...) {},
-  valueClass = "gaMetrics",
+  "Metrics",
+  function(object, ...) {},
+  valueClass = ".metrics",
   useAsDefault = FALSE
 )
 
-#' GaMetrics<-
-#' 
+#' Metrics<-.
+#'
 #' Set the metrics of the object.
-#' 
+#'
+#' @param value The replacement dimensions for the supplied object.
+#'
+#' @rdname Metrics
 #' @export
-#' @rdname GaMetrics
 setGeneric(
-  name = "GaMetrics<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaMetrics<-")
-    validObject(.Object)
-    return(.Object)
+  "Metrics<-",
+  function(object, value) {
+    object <- standardGeneric("Metrics<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaDimensions
-#' 
+#' Dimensions.
+#'
 #' Get the dimensions of the object.
-#' 
+#'
+#' @param object An object to be coerced to a list of dimensions.
+#' @param ... Other dimensions to add to the returned list, or if \code{object}
+#'   is a query object, the replacement dimensions.
+#'
 #' @export
-#' @rdname GaDimensions
+#' @rdname Dimensions
 setGeneric(
-  name = "GaDimensions",
-  def = function(.Object, ...) {},
-  valueClass = "gaDimensions",
+  "Dimensions",
+  function(object, ...) {},
+  valueClass = ".dimensions",
   useAsDefault = FALSE
 )
 
-#' GaDimensions<-
-#' 
+#' Dimensions<-.
+#'
 #' Set the dimensions for the object.
-#' 
+#'
+#' @param value The replacement dimensions for the supplied object.
+#'
 #' @export
-#' @rdname GaDimensions
+#' @rdname Dimensions
 setGeneric(
-  name = "GaDimensions<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaDimensions<-")
-    validObject(.Object)
-    return(.Object)
+  "Dimensions<-",
+  function(object, value) {
+    object <- standardGeneric("Dimensions<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaSortBy
-#' 
+#' SortBy.
+#'
 #' Get the sortBy order of the query.
-#' 
+#'
+#' @param object A character vector or list of dimensions or metrics to sort by.
+#'   If character, then prefixing the dimension name with a "+" means ascending
+#'   order or "-" for decending order. By default metrics are sorted in
+#'   descending order, while dimensions are by default in ascending order.
+#'   Alternatively, supply a query object and replacement dimensions and metrics
+#'   or sort by.
+#' @param ... further dimensions or metrics to sort by, or if \code{object} is a
+#'   query then the replacement list of dimensions or metrics to sort by.
+#' @param desc A logical vector, same length as the resulting list of dimension
+#'   or metric variables, indicating which columns of the resulting query
+#'   response should be sorted in decending order.
+#'
 #' @export
-#' @rdname GaSortBy
+#' @rdname SortBy
 setGeneric(
-  name = "GaSortBy",
-  def = function(.Object, ..., desc = logical(0)) {},
-  valueClass = "gaSortBy",
+  "SortBy",
+  function(object, ..., desc = logical(0)) {},
+  valueClass = c(".sortBy", ".query", "NULL"),
   useAsDefault = FALSE
 )
 
-#' GaSortBy<-
-#' 
+#' SortBy<-.
+#'
 #' Set the order of rows returned by Google Analytics.
-#' 
+#'
+#' @param value The replacement dimensions and metrics for the supplied object.
+#'
 #' @export
-#' @rdname GaSortBy
+#' @rdname SortBy
 setGeneric(
-  name = "GaSortBy<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaSortBy<-")
-    validObject(.Object)
-    return(.Object)
+  "SortBy<-",
+  function(object, value) {
+    object <- standardGeneric("SortBy<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaProfileId
-#' 
-#' Get the profileId of the query
-#' 
+#' GaView.
+#'
+#' Get the viewId of the query
+#'
+#' @param object An object to coerce to a gaView class object or to get the
+#'   gaView of, such as a query, default view of a web property, or the default
+#'   view of the first web property in a Google Analytics account.
+#' @param value The optional replacement view if the object supplied is a query,
+#'   in which case GaView will return the modified query.
+#'
 #' @export
-#' @rdname GaProfileId
+#' @rdname GaView
 setGeneric(
-  name = "GaProfileId",
-  def = function(.Object) {},
-  valueClass = "gaProfileId",
+  "GaView",
+  function(object, value) {},
+  valueClass = c("viewId", "gaView", ".query"),
   useAsDefault = FALSE
 )
 
-#' GaProfileId<-
-#' 
-#' Set the profileId for the query.
-#' 
+#' GaView<-.
+#'
+#' Set the viewId for the query.
+#'
 #' @export
-#' @rdname GaProfileId
+#' @rdname GaView
 setGeneric(
-  name = "GaProfileId<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaProfileId<-")
-    validObject(.Object)
-    return(.Object)
+  "GaView<-",
+  function(object, value) {
+    object <- standardGeneric("GaView<-")
+    validObject(object)
+    object
   }
 )
 
-#' GaMaxResults
-#' 
+#' MaxResults.
+#'
 #' Get the value set for MaxResults.
-#' 
+#'
+#' @param object a query object.
+#' @param value replacement value for the max-results parameter of the query.
+#'
 #' @export
-#' @rdname GaMaxResults
+#' @rdname MaxResults
 setGeneric(
-  name = "GaMaxResults",
-  def = function(.Object) {},
+  "MaxResults",
+  function(object, value) {},
   valueClass = "numeric",
   useAsDefault = FALSE
 )
 
-#' GaMaxResults<-
-#' 
+#' MaxResults<-.
+#'
 #' Set the maximum rows returned by a ganalytics query.
-#' 
+#'
 #' @export
-#' @rdname GaMaxResults
+#' @rdname MaxResults
 setGeneric(
-  name = "GaMaxResults<-",
-  def = function(.Object, value) {
-    .Object <- standardGeneric("GaMaxResults<-")
-    validObject(.Object)
-    return(.Object)
+  "MaxResults<-",
+  function(object, value) {
+    object <- standardGeneric("MaxResults<-")
+    validObject(object)
+    object
   }
 )
 
-#' GetGaUrl
-#' 
-#' Get the utf8 URL string compoent for the given ganalytics object.
-#' 
-#' @rdname GetGaUrl
+#' SamplingLevel.
+#'
+#' Get the sampling level.
+#'
+#' @param object the query or response to check the sampling level of.
+#' @param value if \code{object} is a query, then use  value to set the sampling
+#'   level to of that query.
+#'
+#' @export
+#' @rdname SamplingLevel
 setGeneric(
-  name = "GetGaUrl",
-  def = function(.Object) {},
-  valueClass = "utf8",
+  "SamplingLevel",
+  function(object, value) {},
+  valueClass = c("character", "list"),
   useAsDefault = FALSE
 )
+
+#' SamplingLevel<-.
+#'
+#' Set the sampling level for a ganalytics query.
+#'
+#' @export
+#' @rdname SamplingLevel
+setGeneric(
+  "SamplingLevel<-",
+  function(object, value) {
+    object <- standardGeneric("SamplingLevel<-")
+    validObject(object)
+    object
+  }
+)
+
+#' GetGaData.
+#'
+#' Fetch the data for the Google Analytics API query.
+#'
+#' @param query The query execute and returned the processed response for.
+#' @param creds The OAuth2.0 credentials to use for the request.
+#' @param ... Other arguments to pass on to lower-level API functions.
+#'
+#' @export
+#' @rdname Query
+setGeneric(
+  "GetGaData", function(query, creds = NULL, ...) {
+    standardGeneric("GetGaData")
+  }
+)
+
+#' Authentication credentials for Google Analytics API queries.
+#'
+#' Get or set the authentication credentials for a Google Analytics query object.
+#'
+#' @param object The object to get the credentials from.
+#' @param value The replacement credentials for the supplied query object.
+#' @param ... other arguments pass to \code{GoogleApiCreds}.
+#'
+#' @export
+#' @rdname GaCreds
+setGeneric(
+  "GaCreds",
+  function(object = "GANALYTICS", value = NULL, ...) {
+    standardGenericric("GaCreds")
+  }
+)
+
+#' Set the authentication credentials for a Google Analytics query object.
+#'
+#' @export
+#' @rdname GaCreds
+setGeneric(
+  "GaCreds<-",
+  function(object, value) {
+    object <- standardGeneric("GaCreds<-")
+    validObject(object)
+    object
+  }
+)
+
